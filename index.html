@@ -47,6 +47,7 @@ footer{text-align:center;color:#688893;padding:28px 10px;font-size:11px}
 </div><div id="message"></div></div></main><footer>TROPA DA MARÉ • SISTEMA DE CONTROLE DE MEMBROS</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const $=id=>document.getElementById(id);
 (async()=>{
 if(!window.supabase){
   $('loginMessage').textContent='Carregando conexão segura...';
@@ -67,7 +68,6 @@ const SUPABASE_URL='https://vscglvtlmbpofzhwhpau.supabase.co';
 const SUPABASE_KEY='sb_publishable_hVaXMzTsfP8CWlhlJeapeg_j0G9bSPT';
 const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let members=[],profile=null,canManage=false;
-const $=id=>document.getElementById(id);
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function message(text,error){$('message').textContent=text||'';$('message').style.color=error?'#ffb4bb':'#91aeb8';}
 function loginMessage(text){$('loginMessage').textContent=text||'';}
