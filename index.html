@@ -47,6 +47,22 @@ footer{text-align:center;color:#688893;padding:28px 10px;font-size:11px}
 </div><div id="message"></div></div></main><footer>TROPA DA MARÉ • SISTEMA DE CONTROLE DE MEMBROS</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+(async()=>{
+if(!window.supabase){
+  $('loginMessage').textContent='Carregando conexão segura...';
+  await new Promise(resolve=>{
+    const s=document.createElement('script');
+    s.src='https://unpkg.com/@supabase/supabase-js@2';
+    s.onload=resolve;
+    s.onerror=resolve;
+    document.head.appendChild(s);
+  });
+}
+if(!window.supabase){
+  $('loginMessage').textContent='Não foi possível carregar a conexão com o Supabase. Verifique sua internet ou tente abrir o site em outro navegador.';
+  $('loginBtn').disabled=true;
+  return;
+}
 const SUPABASE_URL='https://vscglvtlmbpofzhwhpau.supabase.co';
 const SUPABASE_KEY='sb_publishable_hVaXMzTsfP8CWlhlJeapeg_j0G9bSPT';
 const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -72,5 +88,11 @@ async function startSession(){try{await loadProfile();showApp(true);await loadMe
 $('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginBtn').disabled=true;loginMessage('Verificando acesso...');const {error}=await supabase.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});$('loginBtn').disabled=false;if(error){loginMessage('Não foi possível entrar: '+error.message);return;}loginMessage('');await startSession();});
 $('logoutBtn').onclick=async()=>{await supabase.auth.signOut();profile=null;members=[];canManage=false;showApp(false);$('loginForm').reset();loginMessage('Você saiu do painel.');};
 (async()=>{const {data:{session}}=await supabase.auth.getSession();if(session)await startSession();else showApp(false);})();
+})().catch(err=>{
+  const box=document.getElementById('loginMessage');
+  if(box) box.textContent='Erro ao iniciar o painel: '+(err?.message||String(err));
+  const btn=document.getElementById('loginBtn');
+  if(btn) btn.disabled=false;
+});
 </script>
 </body></html>
